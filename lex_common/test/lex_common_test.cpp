@@ -128,18 +128,6 @@ TEST(TestLexCommon, CopyResultSuccessNoSlots) {
   EXPECT_TRUE(response.slots.empty());
 }
 
-TEST(TestLexInteractor, TestLexInteractorFailedConfiguration) {
-  LexInteractor lex_interactor;
-  auto lex_configuration = std::make_shared<LexConfiguration>();
-  auto lex_runtime_client =
-    std::make_shared<Aws::LexRuntimeService::LexRuntimeServiceClient>();
-  EXPECT_EQ(ErrorCode::INVALID_LEX_CONFIGURATION,
-    lex_interactor.ConfigureAwsLex(nullptr, nullptr));
-  EXPECT_EQ(ErrorCode::INVALID_LEX_CONFIGURATION,
-    lex_interactor.ConfigureAwsLex(lex_configuration, nullptr));
-  EXPECT_EQ(ErrorCode::INVALID_LEX_CONFIGURATION,
-    lex_interactor.ConfigureAwsLex(nullptr, lex_runtime_client));
-}
-
 }  // namespace Lex
 }  // namespace Aws
+
