@@ -24,7 +24,6 @@ namespace Aws
 {
 namespace Lex
 {
-
 std::ostream & operator<<(
   std::ostream & os,
   const Aws::LexRuntimeService::Model::PostContentRequest & request)
@@ -142,7 +141,10 @@ ErrorCode LexInteractor::PostContent(
     AWS_LOGSTREAM_ERROR(__func__,
       "Aws Lex Error Has Occurred during LexRuntimeService->PostContent" << std::endl <<
       "PostContentResult failed: " << std::endl <<
-      post_content_result.GetError());
+      post_content_result.GetError() << std::endl <<
+      "Request which caused error: " << std::endl <<
+      post_content_request
+    );
   }
   return result_code;
 }

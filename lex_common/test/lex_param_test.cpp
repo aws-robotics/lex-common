@@ -37,25 +37,6 @@ using Aws::Client::ParameterPath;
 using Aws::Client::ParameterReaderMock;
 using Aws::AwsError;
 
-const ParameterPath user_id_key{"lex_configuration", "user_id"};
-const ParameterPath bot_name_key{"lex_configuration", "bot_name"};
-const ParameterPath bot_alias_key{"lex_configuration", "bot_alias"};
-
-void SetupMockReader(
-  const AwsError user_id_error,
-  const AwsError bot_name_error,
-  const AwsError bot_alias_error,
-  ParameterReaderMock & mock_reader)
-{
-  using testing::Return;
-  EXPECT_CALL(mock_reader, ReadStdString(Eq(user_id_key), _))
-  .WillOnce(Return(user_id_error));
-  EXPECT_CALL(mock_reader, ReadStdString(Eq(bot_name_key), _))
-  .WillOnce(Return(bot_name_error));
-  EXPECT_CALL(mock_reader, ReadStdString(Eq(bot_alias_key), _))
-  .WillOnce(Return(bot_alias_error));
-}
-
 TEST(ParameterTest, LoadLexParamsUserIdFail) {
   ParameterReaderMock mock_reader;
   SetupMockReader(AwsError::AWS_ERR_NOT_FOUND, AwsError::AWS_ERR_OK, AwsError::AWS_ERR_OK,
@@ -97,11 +78,11 @@ TEST(ParameterTest, LoadLexParamsSuccess) {
 
   using namespace std::placeholders;
   using testing::Invoke;
-  EXPECT_CALL(mock_reader, ReadStdString(Eq(user_id_key), _))
+  EXPECT_CALL(mock_reader, ReadStdString(Eq(Aws::Client::user_id_key), _))
   .WillOnce(Invoke(std::bind(read_std_str, user_id, _1, _2)));
-  EXPECT_CALL(mock_reader, ReadStdString(Eq(bot_name_key), _))
+  EXPECT_CALL(mock_reader, ReadStdString(Eq(Aws::Client::bot_name_key), _))
   .WillOnce(Invoke(std::bind(read_std_str, bot_name, _1, _2)));
-  EXPECT_CALL(mock_reader, ReadStdString(Eq(bot_alias_key), _))
+  EXPECT_CALL(mock_reader, ReadStdString(Eq(Aws::Client::bot_alias_key), _))
   .WillOnce(Invoke(std::bind(read_std_str, bot_alias, _1, _2)));
   LexConfiguration lex_config;
   ASSERT_EQ(ErrorCode::SUCCESS, LoadLexParameters(mock_reader, lex_config));

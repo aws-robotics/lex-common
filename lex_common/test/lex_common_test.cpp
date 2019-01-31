@@ -25,6 +25,7 @@
 #include <aws/lex/model/PostContentResult.h>
 
 #include <lex_common_test/test_utils.h>
+#include <lex_common_test/parameter_reader_mock.h>
 
 #include <memory>
 #include <string>
@@ -54,7 +55,11 @@ TEST_F(LexCommonTestFixture, CopyResultFailureInvalidJson) {
     *io_stream << "test_text";
     result.ReplaceBody(io_stream);
   }
-  result.SetSlots("This Causes Failure, not valid json");
+  std::string invalid_json = "This causes failure not valid json";
+  const unsigned char * json = reinterpret_cast<const unsigned char *>(
+      invalid_json.c_str());
+  Aws::Utils::ByteBuffer bb(json, invalid_json.size());
+  result.SetSlots(Aws::Utils::HashingUtils::Base64Encode(bb));
   LexResponse response;
   ASSERT_EQ(ErrorCode::INVALID_RESULT, CopyResult(result, response));
 }
@@ -70,8 +75,7 @@ TEST_F(LexCommonTestFixture, CopyResultSuccessValidJson) {
   auto value_str = value.View().WriteReadable();
   const unsigned char * json = reinterpret_cast<const unsigned char *>(
     value_str.c_str());
-  Aws::Utils::ByteBuffer bb(json,
-    value_str.size());
+  Aws::Utils::ByteBuffer bb(json, value_str.size());
   result.SetSlots(Aws::Utils::HashingUtils::Base64Encode(bb));
   LexResponse response;
   ASSERT_EQ(ErrorCode::SUCCESS, CopyResult(result, response));
@@ -88,6 +92,36 @@ TEST_F(LexCommonTestFixture, CopyResultSuccessNoSlots) {
   LexResponse response;
   ASSERT_EQ(ErrorCode::SUCCESS, CopyResult(result, response));
   test_data.ExpectEq(response);
+}
+
+TEST(PostContentInterface, PostContentInterfaceError) {
+  PostContentInterface post_content_interface;
+  LexRequest request;
+  LexResponse response;
+  ASSERT_EQ(ErrorCode::NOT_IMPLEMENTED,
+      post_content_interface.PostContent(request, response));
+}
+
+TEST(BuildLexInteractor, TestBuildInteractorError) {
+  auto param_mock = std::make_shared<Aws::Client::ParameterReaderMock>();
+  Aws::Client::SetupMockReader(AwsError::AWS_ERR_OK,
+      AwsError::AWS_ERR_OK,
+      AwsError::AWS_ERR_NOT_FOUND,
+      *param_mock);
+  LexInteractor lex_interactor;
+  ASSERT_EQ(ErrorCode::INVALID_LEX_CONFIGURATION,
+      BuildLexInteractor(param_mock, lex_interactor));
+}
+
+TEST(BuildLexInteractor, TestBuildInteractorSuccess) {
+  auto param_mock = std::make_shared<Aws::Client::ParameterReaderMock>();
+  Aws::Client::SetupMockReader(AwsError::AWS_ERR_OK,
+                               AwsError::AWS_ERR_OK,
+                               AwsError::AWS_ERR_OK,
+                               *param_mock);
+  LexInteractor lex_interactor;
+  ASSERT_EQ(ErrorCode::SUCCESS,
+            BuildLexInteractor(param_mock, lex_interactor));
 }
 
 }  // namespace Lex

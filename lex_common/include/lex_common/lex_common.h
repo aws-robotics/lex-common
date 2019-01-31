@@ -87,10 +87,23 @@ struct LexResponse
  * @param response [out] result copy
  * @return error code, SUCCESS if the result is copied
  */
+/**
+* @brief Copy the PostContentRestult to a LexResponse.
+*
+* Format the contents of a PostContentResult and insert them into the respective
+* Lex Response Fields.
+*
+* @param result to copy to the response
+* @param response [out] result copy
+* @return error code, SUCCESS if the result is copied,
+* INVALID_RESULT if unable to parse the Slots received
+*/
 ErrorCode CopyResult(
   Aws::LexRuntimeService::Model::PostContentResult & result,
   LexResponse & response);
 
+/** \addtogroup OutputStreams */
+/*\@{*/
 std::ostream & operator<<(
   std::ostream & os,
   const Aws::LexRuntimeService::Model::PostContentRequest & request);
@@ -98,6 +111,7 @@ std::ostream & operator<<(
 std::ostream & operator<<(
   std::ostream & os,
   const Aws::LexRuntimeService::Model::PostContentResult & result);
+/*\@}*/
 
 /**
  * Interface for posting content to lex.
@@ -105,6 +119,14 @@ std::ostream & operator<<(
 class PostContentInterface
 {
 public:
+
+  /**
+   * Consume a request and establish produce a lex response.
+   *
+   * @param request to process
+   * @param response [out] result from lex
+   * @return error code, virtual function produces NOT_IMPLEMENTED
+   */
   virtual ErrorCode PostContent(
     const LexRequest & request,
     LexResponse & response)
@@ -131,10 +153,12 @@ protected:
 
 public:
   /**
-   * Configure the Lex Interactor.
-   * @param lex_configuration
-   * @param lex_runtime_client
+   * @brief Configure the Lex Interactor.
+   *
+   * @param lex_configuration to configure lex calls
+   * @param lex_runtime_client to facilitate lex connection
    * @return INVALID_LEX_CONFIGURATION if either arguments are null
+   * SUCCESS otherwise
    */
   ErrorCode ConfigureAwsLex(
     std::shared_ptr<LexConfiguration> lex_configuration,
@@ -154,6 +178,8 @@ public:
 };
 
 /**
+ * @brief Utility function to configure a LexInteractor
+ *
  * Build a LexInteractor with the parameter reader specified.
  *
  * @param params to use in the lex interactor

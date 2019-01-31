@@ -30,6 +30,8 @@ namespace Lex
  * Load lex parameters from ros param server.
  *
  * @param parameter_interface to retrieve the parameters from.
+ * @param lex_configuration to fill with the parameter data
+ * @return SUCCESS if able to get all parameters, INVALID_LEX_CONFIGURATION otherwise
  */
 ErrorCode LoadLexParameters(
   const Client::ParameterReaderInterface & parameter_interface,

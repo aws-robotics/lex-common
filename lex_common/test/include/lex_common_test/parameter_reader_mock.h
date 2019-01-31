@@ -20,7 +20,6 @@
 
 #include <aws_common/sdk_utils/parameter_reader.h>
 
-
 #include <map>
 #include <vector>
 #include <string>
@@ -54,6 +53,25 @@ inline bool operator==(const ParameterPath & left, const ParameterPath & right)
 {
   return left.get_resolved_path('.', '.') == right.get_resolved_path('.', '.');
 }
+
+extern const ParameterPath user_id_key;
+extern const ParameterPath bot_name_key;
+extern const ParameterPath bot_alias_key;
+
+/**
+ * Set up a mock reader with the parameter paths as the key for the mock reader.
+ * The return code for each of those ReadParams corresponds to the error param errors.
+ *
+ * @param user_id_error
+ * @param bot_name_error
+ * @param bot_alias_error
+ * @param mock_reader [out] configured with EXPECT_CALL's for user_id, bot_name, and bot_alias
+ */
+void SetupMockReader(
+    AwsError user_id_error,
+    AwsError bot_name_error,
+    AwsError bot_alias_error,
+    ParameterReaderMock & mock_reader);
 
 }  // namespace Client
 }  // namespace Aws
