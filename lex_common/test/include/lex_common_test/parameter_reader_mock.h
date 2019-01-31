@@ -13,12 +13,13 @@
  * permissions and limitations under the License.
  */
 
-#ifndef PARAMETER_READER_MOCK_H_
-#define PARAMETER_READER_MOCK_H_
+#ifndef LEX_COMMON_TEST__PARAMETER_READER_MOCK_H_
+#define LEX_COMMON_TEST__PARAMETER_READER_MOCK_H_
 
 #include <gmock/gmock.h>
 
 #include <aws_common/sdk_utils/parameter_reader.h>
+
 
 #include <map>
 #include <vector>
@@ -57,4 +58,4 @@ inline bool operator==(const ParameterPath & left, const ParameterPath & right)
 }  // namespace Client
 }  // namespace Aws
 
-#endif  // PARAMETER_READER_MOCK_H_
+#endif  // LEX_COMMON_TEST__PARAMETER_READER_MOCK_H_

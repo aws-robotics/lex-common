@@ -24,54 +24,31 @@
 #include <aws/core/utils/memory/AWSMemory.h>
 #include <aws/lex/model/PostContentResult.h>
 
+#include <lex_common_test/test_utils.h>
+
 #include <memory>
 #include <string>
 #include <utility>
-
+#include <istream>
+#include <ostream>
 
 namespace Aws
 {
 namespace Lex
 {
-using Aws::LexRuntimeService::Model::PostContentResult;
-class TestData
+class LexCommonTestFixture : public ::testing::Test
 {
-  PostContentResult example_result;
-public:
+protected:
+  TestData test_data;
+  Aws::LexRuntimeService::Model::PostContentResult result;
 
-  std::string content_type = "content_type";
-  LexRuntimeService::Model::DialogState dialog_state =
-    LexRuntimeService::Model::DialogState::ElicitSlot;
-  std::string intent_name = "intent_name";
-  std::string message = "message";
-  std::string slot_to_elicit = "slot_to_elicit";
-  LexRuntimeService::Model::MessageFormatType message_format =
-    LexRuntimeService::Model::MessageFormatType::PlainText;
-  std::string session_attributes = "session_attributes";
-
-  TestData()
+  void SetUp() override
   {
-    example_result.SetContentType(content_type.c_str());
-    example_result.SetDialogState(dialog_state);
-    example_result.SetIntentName(intent_name.c_str());
-    example_result.SetMessage(message.c_str());
-    example_result.SetSlots("");
-    example_result.SetSlotToElicit(slot_to_elicit.c_str());
-    example_result.SetMessageFormat(message_format);
-    example_result.SetSessionAttributes(session_attributes.c_str());
-  }
-
-  PostContentResult&& GetExampleResultR() {
-    return std::forward<PostContentResult>(example_result);
-  }
-  PostContentResult& GetExampleResult() {
-    return example_result;
+    test_data.ConfigureExampleResult(result);
   }
 };
 
-TEST(TestLexCommon, CopyResultFailureInvalidJson) {
-  TestData test_data;
-  auto & result = test_data.GetExampleResult();
+TEST_F(LexCommonTestFixture, CopyResultFailureInvalidJson) {
   {
     auto io_stream = new Aws::StringStream();
     *io_stream << "test_text";
@@ -82,9 +59,7 @@ TEST(TestLexCommon, CopyResultFailureInvalidJson) {
   ASSERT_EQ(ErrorCode::INVALID_RESULT, CopyResult(result, response));
 }
 
-TEST(TestLexCommon, CopyResultSuccessValidJson) {
-  TestData test_data;
-  auto & result = test_data.GetExampleResult();
+TEST_F(LexCommonTestFixture, CopyResultSuccessValidJson) {
   {
     auto io_stream = new Aws::StringStream();
     *io_stream << "test_text";
@@ -104,9 +79,7 @@ TEST(TestLexCommon, CopyResultSuccessValidJson) {
   EXPECT_EQ("value", response.slots["key"]);
 }
 
-TEST(TestLexCommon, CopyResultSuccessNoSlots) {
-  TestData test_data;
-  auto & result = test_data.GetExampleResult();
+TEST_F(LexCommonTestFixture, CopyResultSuccessNoSlots) {
   {
     auto io_stream = new Aws::StringStream();
     *io_stream << "test_text";
@@ -114,20 +87,8 @@ TEST(TestLexCommon, CopyResultSuccessNoSlots) {
   }
   LexResponse response;
   ASSERT_EQ(ErrorCode::SUCCESS, CopyResult(result, response));
-  EXPECT_EQ(test_data.message, response.text_response);
-  EXPECT_EQ(test_data.intent_name, response.intent_name);
-  using Aws::LexRuntimeService::Model::DialogStateMapper::GetNameForDialogState;
-  std::string dialog_state_name =
-    GetNameForDialogState(test_data.dialog_state).c_str();
-  EXPECT_EQ(dialog_state_name, response.dialog_state);
-  using Aws::LexRuntimeService::Model::MessageFormatTypeMapper::GetNameForMessageFormatType;
-  std::string message_format_name =
-    GetNameForMessageFormatType(test_data.message_format).c_str();
-  EXPECT_EQ(message_format_name, response.message_format_type);
-  EXPECT_EQ(test_data.session_attributes, response.session_attributes);
-  EXPECT_TRUE(response.slots.empty());
+  test_data.ExpectEq(response);
 }
 
 }  // namespace Lex
 }  // namespace Aws
-

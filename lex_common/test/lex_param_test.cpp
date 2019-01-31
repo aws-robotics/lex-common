@@ -15,11 +15,19 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include <parameter_reader_mock.h>
+#include <lex_common_test/parameter_reader_mock.h>
+#include <lex_common_test/test_logger.h>
 
 #include <lex_common/lex_param_helper.h>
 
+#include <aws/core/config/AWSProfileConfigLoader.h>
+#include <aws/core/Aws.h>
+#include <aws/core/utils/logging/LogMacros.h>
+#include <aws/core/utils/logging/AWSLogging.h>
+#include <aws/core/utils/logging/LogLevel.h>
+
 #include <string>
+#include <memory>
 
 using Aws::Lex::ErrorCode;
 using Aws::Lex::LexConfiguration;
@@ -104,8 +112,15 @@ TEST(ParameterTest, LoadLexParamsSuccess) {
 
 int main(int argc, char ** argv)
 {
+  Aws::Utils::Logging::InitializeAWSLogging(
+    std::make_shared<Aws::Utils::Logging::TestLogSystem>(Aws::Utils::Logging::LogLevel::Trace));
+  Aws::SDKOptions options;
+  Aws::InitAPI(options);
   // The following line must be executed to initialize Google Mock
   // (and Google Test) before running the tests.
   ::testing::InitGoogleMock(&argc, argv);
-  return RUN_ALL_TESTS();
+  auto result = RUN_ALL_TESTS();
+  Aws::Utils::Logging::ShutdownAWSLogging();
+  Aws::ShutdownAPI(options);
+  return result;
 }

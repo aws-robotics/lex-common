@@ -173,7 +173,6 @@ inline ErrorCode BuildLexInteractor(
   Client::ClientConfigurationProvider configuration_provider(params);
   auto lex_runtime_client = Aws::MakeShared<Aws::LexRuntimeService::LexRuntimeServiceClient>(
     kAllocationTag, configuration_provider.GetClientConfiguration());
-  // @todo: std::make_unique with c++14
   lex_interactor = LexInteractor();
   lex_interactor.ConfigureAwsLex(lex_configuration, lex_runtime_client);
   return result;

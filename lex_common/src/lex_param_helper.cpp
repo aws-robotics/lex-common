@@ -28,11 +28,11 @@ ErrorCode LoadLexParameters(
 {
   bool is_invalid = false;
   is_invalid |= static_cast<bool>(parameter_interface.ReadStdString(
-    lex_configuration.kBotAliasKey_, lex_configuration.bot_alias));
+      lex_configuration.kBotAliasKey_, lex_configuration.bot_alias));
   is_invalid |= static_cast<bool>(parameter_interface.ReadStdString(
-    lex_configuration.kBotNameKey_, lex_configuration.bot_name));
+      lex_configuration.kBotNameKey_, lex_configuration.bot_name));
   is_invalid |= static_cast<bool>(parameter_interface.ReadStdString(
-    lex_configuration.kUserIdKey_, lex_configuration.user_id));
+      lex_configuration.kUserIdKey_, lex_configuration.user_id));
   if (is_invalid) {
     AWS_LOG_WARN(__func__, "Lex configuration not fully specified");
     return INVALID_LEX_CONFIGURATION;

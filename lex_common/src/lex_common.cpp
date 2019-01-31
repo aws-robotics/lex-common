@@ -134,13 +134,15 @@ ErrorCode LexInteractor::PostContent(
   if (post_content_result.IsSuccess()) {
     auto & result = post_content_result.GetResult();
     AWS_LOGSTREAM_DEBUG(__func__, "PostContentResult succeeded: " << result.GetMessage());
-    // @todo: use response variable for errors.
     result_code = CopyResult(result, response);
 
   } else {
-    result_code = FAILED_POST_CONTENT;
+    bool is_retryable = post_content_result.GetError().ShouldRetry();
+    result_code = is_retryable ? RETRY_POST_CONTENT : FAILED_POST_CONTENT;
     AWS_LOGSTREAM_ERROR(__func__,
-      "PostContentResult failed: " << post_content_result.GetError().GetMessage());
+      "Aws Lex Error Has Occurred during LexRuntimeService->PostContent" << std::endl <<
+      "PostContentResult failed: " << std::endl <<
+      post_content_result.GetError());
   }
   return result_code;
 }

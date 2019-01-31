@@ -82,7 +82,9 @@ find_package(catkin QUIET)
 find_package(ament QUIET)
 find_package(ament_cmake_gtest QUIET)
 set(TEST_TARGET test_lex_common)
-set(TEST_FILES test/lex_param_test.cpp test/lex_common_test.cpp)
+set(TEST_FILES test/lex_param_test.cpp
+        test/lex_common_test.cpp
+        test/lex_interactor_test.cpp)
 if (catkin_FOUND)
     if (NOT GMOCK_FOUND AND NOT TARGET gmock)
         include_directories(/usr/include/gmock /usr/src/gmock)
