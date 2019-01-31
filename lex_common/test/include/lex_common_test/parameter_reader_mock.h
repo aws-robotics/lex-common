@@ -68,10 +68,10 @@ extern const ParameterPath bot_alias_key;
  * @param mock_reader [out] configured with EXPECT_CALL's for user_id, bot_name, and bot_alias
  */
 void SetupMockReader(
-    AwsError user_id_error,
-    AwsError bot_name_error,
-    AwsError bot_alias_error,
-    ParameterReaderMock & mock_reader);
+  AwsError user_id_error,
+  AwsError bot_name_error,
+  AwsError bot_alias_error,
+  ParameterReaderMock & mock_reader);
 
 }  // namespace Client
 }  // namespace Aws

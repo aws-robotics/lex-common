@@ -119,7 +119,6 @@ std::ostream & operator<<(
 class PostContentInterface
 {
 public:
-
   /**
    * Consume a request and establish produce a lex response.
    *

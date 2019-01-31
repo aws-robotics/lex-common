@@ -26,20 +26,20 @@ const ParameterPath bot_name_key{"lex_configuration", "bot_name"};
 const ParameterPath bot_alias_key{"lex_configuration", "bot_alias"};
 
 void SetupMockReader(
-    const AwsError user_id_error,
-    const AwsError bot_name_error,
-    const AwsError bot_alias_error,
-    ParameterReaderMock & mock_reader)
+  const AwsError user_id_error,
+  const AwsError bot_name_error,
+  const AwsError bot_alias_error,
+  ParameterReaderMock & mock_reader)
 {
   using testing::Return;
   using testing::_;
   using testing::Eq;
   EXPECT_CALL(mock_reader, ReadStdString(Eq(user_id_key), _))
-      .WillOnce(Return(user_id_error));
+  .WillOnce(Return(user_id_error));
   EXPECT_CALL(mock_reader, ReadStdString(Eq(bot_name_key), _))
-      .WillOnce(Return(bot_name_error));
+  .WillOnce(Return(bot_name_error));
   EXPECT_CALL(mock_reader, ReadStdString(Eq(bot_alias_key), _))
-      .WillOnce(Return(bot_alias_error));
+  .WillOnce(Return(bot_alias_error));
 }
 
 }  // namespace Client
