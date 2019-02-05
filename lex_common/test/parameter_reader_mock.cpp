@@ -16,6 +16,8 @@
 #include <aws_common/sdk_utils/parameter_reader.h>
 #include <lex_common_test/parameter_reader_mock.h>
 
+#include <string>
+
 namespace Aws
 {
 namespace Client
@@ -34,11 +36,11 @@ void SetupMockReader(
   using testing::Return;
   using testing::_;
   using testing::Eq;
-  EXPECT_CALL(mock_reader, ReadStdString(Eq(user_id_key), _))
+  EXPECT_CALL(mock_reader, ReadParam(Eq(user_id_key), testing::A<std::string&>()))
   .WillOnce(Return(user_id_error));
-  EXPECT_CALL(mock_reader, ReadStdString(Eq(bot_name_key), _))
+  EXPECT_CALL(mock_reader, ReadParam(Eq(bot_name_key), testing::A<std::string&>()))
   .WillOnce(Return(bot_name_error));
-  EXPECT_CALL(mock_reader, ReadStdString(Eq(bot_alias_key), _))
+  EXPECT_CALL(mock_reader, ReadParam(Eq(bot_alias_key), testing::A<std::string&>()))
   .WillOnce(Return(bot_alias_error));
 }
 

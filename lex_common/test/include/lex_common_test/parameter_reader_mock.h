@@ -33,26 +33,21 @@ namespace Client
 class ParameterReaderMock : public Aws::Client::ParameterReaderInterface
 {
 public:
-  MOCK_CONST_METHOD2(ReadList, Aws::AwsError(
+  MOCK_CONST_METHOD2(ReadParam, Aws::AwsError(
       const ParameterPath &, std::vector<std::string>&));
-  MOCK_CONST_METHOD2(ReadDouble, Aws::AwsError(
+  MOCK_CONST_METHOD2(ReadParam, Aws::AwsError(
       const ParameterPath &, double &));
-  MOCK_CONST_METHOD2(ReadInt, Aws::AwsError(
+  MOCK_CONST_METHOD2(ReadParam, Aws::AwsError(
       const ParameterPath &, int &));
-  MOCK_CONST_METHOD2(ReadBool, Aws::AwsError(
+  MOCK_CONST_METHOD2(ReadParam, Aws::AwsError(
       const ParameterPath &, bool &));
-  MOCK_CONST_METHOD2(ReadString, Aws::AwsError(
+  MOCK_CONST_METHOD2(ReadParam, Aws::AwsError(
       const ParameterPath &, Aws::String &));
-  MOCK_CONST_METHOD2(ReadStdString, Aws::AwsError(
+  MOCK_CONST_METHOD2(ReadParam, Aws::AwsError(
       const ParameterPath &, std::string &));
-  MOCK_CONST_METHOD2(ReadMap, Aws::AwsError(
+  MOCK_CONST_METHOD2(ReadParam, Aws::AwsError(
       const ParameterPath &, std::map<std::string, std::string>&));
 };
-
-inline bool operator==(const ParameterPath & left, const ParameterPath & right)
-{
-  return left.get_resolved_path('.', '.') == right.get_resolved_path('.', '.');
-}
 
 extern const ParameterPath user_id_key;
 extern const ParameterPath bot_name_key;

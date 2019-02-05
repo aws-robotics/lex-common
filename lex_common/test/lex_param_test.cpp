@@ -75,14 +75,13 @@ TEST(ParameterTest, LoadLexParamsSuccess) {
       out = expected;
       return AwsError::AWS_ERR_OK;
     };
-
   using namespace std::placeholders;
   using testing::Invoke;
-  EXPECT_CALL(mock_reader, ReadStdString(Eq(Aws::Client::user_id_key), _))
+  EXPECT_CALL(mock_reader, ReadParam(Eq(Aws::Client::user_id_key), testing::A<std::string&>()))
   .WillOnce(Invoke(std::bind(read_std_str, user_id, _1, _2)));
-  EXPECT_CALL(mock_reader, ReadStdString(Eq(Aws::Client::bot_name_key), _))
+  EXPECT_CALL(mock_reader, ReadParam(Eq(Aws::Client::bot_name_key), testing::A<std::string&>()))
   .WillOnce(Invoke(std::bind(read_std_str, bot_name, _1, _2)));
-  EXPECT_CALL(mock_reader, ReadStdString(Eq(Aws::Client::bot_alias_key), _))
+  EXPECT_CALL(mock_reader, ReadParam(Eq(Aws::Client::bot_alias_key), testing::A<std::string&>()))
   .WillOnce(Invoke(std::bind(read_std_str, bot_alias, _1, _2)));
   LexConfiguration lex_config;
   ASSERT_EQ(ErrorCode::SUCCESS, LoadLexParameters(mock_reader, lex_config));
