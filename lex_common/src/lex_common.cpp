@@ -66,18 +66,25 @@ ErrorCode CopyResult(
   using Aws::LexRuntimeService::Model::MessageFormatTypeMapper::GetNameForMessageFormatType;
   response.message_format_type = GetNameForMessageFormatType(result.GetMessageFormat()).c_str();
   response.text_response = result.GetMessage().c_str();
+  
+  // Copy audio stream into vector
   std::streampos audio_size = result.GetAudioStream().seekg(0, std::ios_base::end).tellg();
   response.audio_response = std::vector<uint8_t>(audio_size);
   result.GetAudioStream().seekg(0, std::ios_base::beg);
   result.GetAudioStream().read(reinterpret_cast<char *>(&response.audio_response[0]), audio_size);
+  
   response.intent_name = result.GetIntentName().c_str();
   using Aws::LexRuntimeService::Model::DialogStateMapper::GetNameForDialogState;
   response.dialog_state = GetNameForDialogState(result.GetDialogState()).c_str();
   std::string session_attributes = result.GetSessionAttributes().c_str();
+  
+  // Strings are Base64 from lex, decode and store into a slot string
   auto slot_byte_buffer = Aws::Utils::HashingUtils::Base64Decode(result.GetSlots().c_str());
   Aws::String slot_string(reinterpret_cast<char *>(slot_byte_buffer.GetUnderlyingData()),
     slot_byte_buffer.GetLength());
   response.session_attributes = result.GetSessionAttributes().c_str();
+
+  // Parse json into a map of slots
   if (!slot_string.empty()) {
     auto slot_json = Aws::Utils::Json::JsonValue(slot_string);
     if (slot_json.WasParseSuccessful()) {

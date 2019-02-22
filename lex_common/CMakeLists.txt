@@ -6,16 +6,6 @@ SET(LEX_COMMON_VERSION 1.0.0)
 find_package(aws_common REQUIRED)
 
 add_compile_options(-std=c++11 -fPIC)
-if (DEFINED ENV{ROS_DISTRO})
-    add_definitions(-DCMAKE_ROS_DISTRO="$ENV{ROS_DISTRO}")
-endif ()
-if (DEFINED ENV{ROS_VERSION})
-    add_definitions(-DCMAKE_ROS_VERSION="$ENV{ROS_VERSION}")
-endif ()
-
-#if(NOT EXTERNAL_INSTALL_LOCATION)
-#    set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
-#endif()
 
 if (AWSSDK_FOUND)
     set(SERVICE lex)
@@ -84,22 +74,25 @@ find_package(ament_cmake_gtest QUIET)
 set(TEST_TARGET test_lex_common)
 set(TEST_FILES test/lex_param_test.cpp
         test/lex_common_test.cpp
-        test/lex_interactor_test.cpp
         test/parameter_reader_mock.cpp)
+
+# Catkin relies on system installed gmock 
+set(TEST_1_8_MOCK_FILES ${TEST_FILES} test/lex_interactor_test.cpp)
+
 if (catkin_FOUND)
     if (NOT GMOCK_FOUND AND NOT TARGET gmock)
-        include_directories(/usr/include/gmock /usr/src/gmock)
-        add_library(gmock /usr/src/gmock/src/gmock-all.cc)
+      include_directories(/usr/include/gmock /usr/src/gmock)
+      add_library(gmock /usr/src/gmock/src/gmock-all.cc)
     endif ()
     catkin_destinations()
     if (CATKIN_ENABLE_TESTING)
-        message(STATUS "Building tests using catkin")
+        message(STATUS "Building tests using catkin ${TEST_FILES}")
         catkin_add_gtest(${TEST_TARGET} ${TEST_FILES})
     endif ()
 elseif (ament_cmake_gtest_FOUND)
     find_package(ament_cmake_gmock REQUIRED)
-    message(STATUS "Building tests using ament ${TEST_FILES}")
-    ament_add_gtest(${TEST_TARGET} ${TEST_FILES})
+    message(STATUS "Building tests using ament ${TEST_1_8_MOCK_FILES}")
+    ament_add_gmock(${TEST_TARGET} ${TEST_1_8_MOCK_FILES})
 else ()
     message(STATUS "Not building tests as neither catkin nor ament were found.")
 endif ()

@@ -94,14 +94,6 @@ TEST_F(LexCommonTestFixture, CopyResultSuccessNoSlots) {
   test_data.ExpectEq(response);
 }
 
-TEST(PostContentInterface, PostContentInterfaceError) {
-  PostContentInterface post_content_interface;
-  LexRequest request;
-  LexResponse response;
-  ASSERT_EQ(ErrorCode::NOT_IMPLEMENTED,
-    post_content_interface.PostContent(request, response));
-}
-
 TEST(BuildLexInteractor, TestBuildInteractorError) {
   auto param_mock = std::make_shared<Aws::Client::ParameterReaderMock>();
   Aws::Client::SetupMockReader(AwsError::AWS_ERR_OK,

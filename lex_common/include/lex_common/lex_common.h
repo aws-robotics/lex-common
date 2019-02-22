@@ -124,14 +124,11 @@ public:
    *
    * @param request to process
    * @param response [out] result from lex
-   * @return error code, virtual function produces NOT_IMPLEMENTED
+   * @return error code
    */
   virtual ErrorCode PostContent(
     const LexRequest & request,
-    LexResponse & response)
-  {
-    return NOT_IMPLEMENTED;
-  }
+    LexResponse & response) = 0;
 };
 
 /**
