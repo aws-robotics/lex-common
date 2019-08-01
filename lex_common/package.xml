@@ -13,7 +13,7 @@
     <buildtool_depend>cmake</buildtool_depend>
 
     <build_depend condition="$ROS_VERSION == 1">catkin</build_depend>
-    <build_depend condition="$ROS_VERSION == 2">ament</build_depend>
+    <build_depend condition="$ROS_VERSION == 2">ament_cmake</build_depend>
     <build_depend>ros_environment</build_depend>
 
     <depend version_gte="2.0.0">aws_common</depend>
