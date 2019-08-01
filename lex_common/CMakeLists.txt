@@ -69,7 +69,7 @@ INSTALL(EXPORT ${PROJECT_NAME}-targets DESTINATION share/${PROJECT_NAME}/cmake)
 SET(BUILD_TESTING ON)
 enable_testing()
 find_package(catkin QUIET)
-find_package(ament QUIET)
+find_package(ament_cmake QUIET)
 find_package(ament_cmake_gtest QUIET)
 set(TEST_TARGET test_lex_common)
 set(TEST_FILES test/lex_param_test.cpp
