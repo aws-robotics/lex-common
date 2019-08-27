@@ -100,6 +100,7 @@ TEST(BuildLexInteractor, TestBuildInteractorError) {
     AwsError::AWS_ERR_OK,
     AwsError::AWS_ERR_NOT_FOUND,
     *param_mock);
+
   LexInteractor lex_interactor;
   ASSERT_EQ(ErrorCode::INVALID_LEX_CONFIGURATION,
     BuildLexInteractor(param_mock, lex_interactor));
@@ -111,6 +112,8 @@ TEST(BuildLexInteractor, TestBuildInteractorSuccess) {
     AwsError::AWS_ERR_OK,
     AwsError::AWS_ERR_OK,
     *param_mock);
+  ::testing::DefaultValue<AwsError>::Set(AwsError::AWS_ERR_OK);
+
   LexInteractor lex_interactor;
   ASSERT_EQ(ErrorCode::SUCCESS,
     BuildLexInteractor(param_mock, lex_interactor));

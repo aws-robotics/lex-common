@@ -63,63 +63,49 @@ INSTALL(FILES ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake DESTINATION shar
 INSTALL(FILES ${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake DESTINATION share/${PROJECT_NAME}/cmake)
 INSTALL(EXPORT ${PROJECT_NAME}-targets DESTINATION share/${PROJECT_NAME}/cmake)
 
+
 #############
 ## Testing ##
 #############
-SET(BUILD_TESTING ON)
+
 enable_testing()
-find_package(catkin QUIET)
-find_package(ament_cmake QUIET)
-find_package(ament_cmake_gtest QUIET)
-set(TEST_TARGET test_lex_common)
-set(TEST_FILES test/lex_param_test.cpp
+find_common_test_packages()
+if(GMOCK_LIBRARY)
+
+    macro(link_test_target target_name)
+        if(TARGET ${target_name})
+            target_include_directories("${target_name}" PRIVATE ${HEADERS_FOR_TESTS})
+            target_link_libraries("${target_name}" ${LIBS_FOR_TESTS})
+        endif()
+    endmacro()
+
+    set(TEST_TARGET test_lex_common)
+
+    set(TEST_FILES
+        test/lex_param_test.cpp
         test/lex_common_test.cpp
-        test/parameter_reader_mock.cpp)
+        test/parameter_reader_mock.cpp
+    )
 
-# Catkin relies on system installed gmock 
-set(TEST_1_8_MOCK_FILES ${TEST_FILES} test/lex_interactor_test.cpp)
+    add_common_gtest(${TEST_TARGET}
+        ${TEST_FILES}
+    )
 
-if (catkin_FOUND)
-    if (NOT GMOCK_FOUND AND NOT TARGET gmock)
-      include_directories(/usr/include/gmock /usr/src/gmock)
-      add_library(gmock /usr/src/gmock/src/gmock-all.cc)
-    endif ()
-    catkin_destinations()
-    if (CATKIN_ENABLE_TESTING)
-        message(STATUS "Building tests using catkin ${TEST_FILES}")
-        catkin_add_gtest(${TEST_TARGET} ${TEST_FILES})
-    endif ()
-elseif (ament_cmake_gtest_FOUND)
-    find_package(ament_cmake_gmock REQUIRED)
-    message(STATUS "Building tests using ament ${TEST_1_8_MOCK_FILES}")
-    ament_add_gmock(${TEST_TARGET} ${TEST_1_8_MOCK_FILES})
-else ()
-    message(STATUS "Not building tests as neither catkin nor ament were found.")
-endif ()
-
-if (DEFINED GMOCK_LIBRARIES)
-    set(GMOCK_LIBRARY ${GMOCK_LIBRARIES})
-else ()
-    set(GMOCK_LIBRARY gmock)
-endif ()
-
-set(LIBS_FOR_TESTS
+    set(LIBS_FOR_TESTS
         ${GTEST_LIBRARIES}
         pthread
         ${GMOCK_LIBRARY}
         ${aws_common_LIBRARIES}
-        ${PROJECT_NAME})
+        ${PROJECT_NAME}
+    )
 
-set(HEADERS_FOR_TESTS
+    set(HEADERS_FOR_TESTS
         ${aws_common_INCLUDE_DIRS}
         ${AWSSDK_INCLUDE_DIR}
         ${GTEST_INCLUDE_DIR}
-        test/include)
+        test/include
+    )
 
-macro(link_test_target target_name)
-    if (TARGET ${target_name})
-        target_include_directories("${target_name}" PRIVATE ${HEADERS_FOR_TESTS})
-        target_link_libraries("${target_name}" ${LIBS_FOR_TESTS})
-    endif ()
-endmacro()
-link_test_target(${TEST_TARGET})
+    link_test_target(${TEST_TARGET})
+
+endif()
