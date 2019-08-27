@@ -1,17 +1,7 @@
-## Lex Common
+# Lex Common
+
 
 **Note: this repository is under active development. The package provided here is a release candidate; the API may change without notice and no support is provided for it at the moment.**
-
-## Overview
-
-ROS packages for facilitating the use of AWS cloud services.
-
-## License
-
-This library is licensed under the Apache 2.0 License. 
-=======
-# lex_common
-
 
 ## Overview
 
@@ -24,14 +14,27 @@ The source code is released under an [Apache 2.0].
 
 ### Supported ROS Distributions
 - Kinetic
-- Lunar
+- Melodic
 - Dashing
 
 ### Build status
+* Travis CI:
+    * "master" branch [![Build Status](https://travis-ci.org/aws-robotics/lex-common.svg?branch=master)](https://travis-ci.org/aws-robotics/lex-common/branches)
+    * "release-latest" branch [![Build Status](https://travis-ci.org/aws-robotics/lex-common.svg?branch=release-latest)](https://travis-ci.org/aws-robotics/lex-common/branches)
+* ROS build farm:
+    * ROS Kinetic @ u16.04 Xenial
+        * lex_common [![Build Status](http://build.ros.org/job/Kbin_uX64__lex_common__ubuntu_xenial_amd64__binary/badge/icon)](http://build.ros.org/job/Kbin_uX64__lex_common__ubuntu_xenial_amd64__binary)
+    * ROS Melodic @ u18.04 Bionic
+        * lex_common [![Build Status](http://build.ros.org/job/Mbin_uB64__lex_common__ubuntu_bionic_amd64__binary/badge/icon)](http://build.ros.org/job/Mbin_uB64__lex_common__ubuntu_bionic_amd64__binary)
 
-@TODO: build status
 
 ## Installation
+
+### Binaries
+On Ubuntu you can install the latest version of this package using the following command
+
+        sudo apt-get update
+        sudo apt-get install -y ros-${ROS_DISTRO}-lex-common ros-${ROS_DISTRO}-lex-common
 
 ### Building from Source
 
@@ -39,14 +42,12 @@ To build from source you'll need to create a new workspace, clone and checkout t
 
 - Create a ROS workspace and a source directory
 
-    mkdir -p ~/ros-workspace/src
+        mkdir -p ~/ros-workspace/src
 
 - Clone the package into the source directory . 
 
-_Note: Replace __`{MAJOR.VERSION}`__ below with the latest major version number to get the latest release branch._
-
         cd ~/ros-workspace/src
-        git clone https://github.com/aws-robotics/lex-common.git -b release-v{MAJOR.VERSION}
+        git clone https://github.com/aws-robotics/lex-common.git -b release-latest
 
 - Install dependencies
 
@@ -60,10 +61,9 @@ _Note: If building the master branch instead of a release branch you may need to
 
         cd ~/ros-workspace && colcon build
 
-- Configure ROS library Path
+- Configure ROS library path
 
         source ~/ros-workspace/install/setup.bash
-
 
 - Build and run the unit tests
 
@@ -79,10 +79,4 @@ Please report bugs in [Issue Tracker].
 
 [Amazon Web Services (AWS)]: https://aws.amazon.com/
 [Apache 2.0]: https://aws.amazon.com/apache-2-0/
-[AWS Configuration and Credential Files]: https://docs.aws.amazon.com/cli/latest/userguide/cli-config-files.html
-[aws-sdk-c++]: https://github.com/aws/aws-sdk-cpp
-[Getting Started with Amazon Lex]: https://docs.aws.amazon.com/lex/latest/dg/getting-started.html
-[Issue Tracker]: TODO
-[ROS]: http://www.ros.org
-[sample app]: TODO
-
+[Issue Tracker]: https://github.com/aws-robotics/lex-common/issues

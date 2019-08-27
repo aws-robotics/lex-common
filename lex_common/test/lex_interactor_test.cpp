@@ -33,6 +33,58 @@
 #include <ostream>
 #include <vector>
 
+namespace
+{
+
+template <typename T>
+class Mover
+{
+public:
+  Mover(T && object)
+    : object(std::move(object)),
+      valid(true) {}
+
+  Mover(const Mover<T> & other)
+    : object(const_cast<T &&>(other.object)),
+      valid(true)
+  {
+    assert(other.valid);
+    other.valid = false;
+  }
+
+  Mover & operator=(const Mover & other)
+  {
+    assert(other.valid);
+    object = const_cast<T &&>(other.object);
+    other.valid = false;
+    valid = true;
+  }
+
+  T & get()
+  {
+    assert(valid);
+    return object;
+  }
+
+  const T & get() const
+  {
+    assert(valid);
+    return object;
+  }
+
+private:
+  T object;
+  mutable bool valid;
+};
+
+template <typename T>
+inline Mover<T> Movable(T && object)
+{
+  return Mover<T>(std::move(object));
+}
+
+}
+
 namespace Aws
 {
 namespace Lex
@@ -64,7 +116,12 @@ class LexRuntimeServiceClientMock
 public:
   virtual ~LexRuntimeServiceClientMock() = default;
 
-  MOCK_CONST_METHOD1(PostContent, PostContentOutcome(const PostContentRequest & request));
+  MOCK_CONST_METHOD1(PostContent_, Mover<PostContentOutcome>(const PostContentRequest & request));
+
+  PostContentOutcome PostContent(const PostContentRequest & request) const
+  {
+    return std::move(PostContent_(request).get());
+  }
 };
 
 class TestLexInteractor : public ::testing::Test
@@ -118,9 +175,9 @@ TEST_F(TestLexInteractor, TestLexInteractorPostContentText) {
   std::copy(default_request.audio_request.begin(),
     default_request.audio_request.end(), std::ostream_iterator<unsigned char>(*io_stream));
   default_expected_request.SetBody(io_stream);
-  EXPECT_CALL(*lex_runtime_client, PostContent(default_expected_request))
-  .WillOnce(testing::Return(testing::ByMove(PostContentOutcome(std::move(result)))));
-// Aws::Client::AWSError<LexRuntimeServiceErrors>
+  EXPECT_CALL(*lex_runtime_client, PostContent_(default_expected_request))
+  .WillOnce(testing::Return(Movable(PostContentOutcome(std::move(result)))));
+  // Aws::Client::AWSError<LexRuntimeServiceErrors>
   LexResponse response;
   ASSERT_EQ(ErrorCode::SUCCESS, lex_interactor.PostContent(default_request, response));
   test_data.ExpectEq(response);
@@ -138,8 +195,8 @@ TEST_F(TestLexInteractor, TestLexInteractorPostContentAudio) {
   TestData test_data;
   PostContentResult result;
   test_data.ConfigureExampleResult(result);
-  EXPECT_CALL(*lex_runtime_client, PostContent(default_expected_request))
-  .WillOnce(testing::Return(testing::ByMove(PostContentOutcome(std::move(result)))));
+  EXPECT_CALL(*lex_runtime_client, PostContent_(default_expected_request))
+  .WillOnce(testing::Return(Movable(PostContentOutcome(std::move(result)))));
 
   LexResponse response;
   ASSERT_EQ(ErrorCode::SUCCESS, lex_interactor.PostContent(default_request, response));
@@ -150,9 +207,8 @@ TEST_F(TestLexInteractor, TestLexInteractorPostContentFailed) {
   ASSERT_EQ(ErrorCode::SUCCESS, lex_interactor.ConfigureAwsLex(lex_configuration,
     lex_runtime_client));
 
-  EXPECT_CALL(*lex_runtime_client, PostContent(testing::_))
-  .WillOnce(testing::Return(
-      testing::ByMove(PostContentOutcome(
+  EXPECT_CALL(*lex_runtime_client, PostContent_(testing::_))
+  .WillOnce(testing::Return(Movable(PostContentOutcome(
         Aws::Client::AWSError<LexRuntimeServiceErrors>(LexRuntimeServiceErrors::ACCESS_DENIED,
         false)))));
   LexResponse response;
@@ -163,9 +219,8 @@ TEST_F(TestLexInteractor, TestLexInteractorPostContentRetry) {
   ASSERT_EQ(ErrorCode::SUCCESS, lex_interactor.ConfigureAwsLex(lex_configuration,
     lex_runtime_client));
 
-  EXPECT_CALL(*lex_runtime_client, PostContent(testing::_))
-  .WillOnce(testing::Return(
-      testing::ByMove(PostContentOutcome(
+  EXPECT_CALL(*lex_runtime_client, PostContent_(testing::_))
+  .WillOnce(testing::Return(Movable(PostContentOutcome(
         Aws::Client::AWSError<LexRuntimeServiceErrors>(LexRuntimeServiceErrors::REQUEST_TIMEOUT,
         true)))));
   LexResponse response;
