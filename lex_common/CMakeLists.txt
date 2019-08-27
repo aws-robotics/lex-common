@@ -84,6 +84,7 @@ if(GMOCK_LIBRARY)
     set(TEST_FILES
         test/lex_param_test.cpp
         test/lex_common_test.cpp
+        test/lex_interactor_test.cpp
         test/parameter_reader_mock.cpp
     )
 
