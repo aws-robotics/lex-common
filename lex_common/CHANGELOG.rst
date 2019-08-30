@@ -2,8 +2,8 @@
 Changelog for package lex_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.0 (2019-08-29)
+------------------
 * Merge pull request `#4 <https://github.com/aws-robotics/lex-common/issues/4>`_ from aws-robotics/ros2_migration
   Cleanup CMakeLists.txt and README
 * recover test code coverage
