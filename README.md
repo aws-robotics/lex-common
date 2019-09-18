@@ -1,8 +1,5 @@
 # Lex Common
 
-
-**Note: this repository is under active development. The package provided here is a release candidate; the API may change without notice and no support is provided for it at the moment.**
-
 ## Overview
 
 ### License
@@ -22,11 +19,9 @@ The source code is released under an [Apache 2.0].
     * "master" branch [![Build Status](https://travis-ci.org/aws-robotics/lex-common.svg?branch=master)](https://travis-ci.org/aws-robotics/lex-common/branches)
     * "release-latest" branch [![Build Status](https://travis-ci.org/aws-robotics/lex-common.svg?branch=release-latest)](https://travis-ci.org/aws-robotics/lex-common/branches)
 * ROS build farm:
-    * ROS Kinetic @ u16.04 Xenial
-        * lex_common [![Build Status](http://build.ros.org/job/Kbin_uX64__lex_common__ubuntu_xenial_amd64__binary/badge/icon)](http://build.ros.org/job/Kbin_uX64__lex_common__ubuntu_xenial_amd64__binary)
-    * ROS Melodic @ u18.04 Bionic
-        * lex_common [![Build Status](http://build.ros.org/job/Mbin_uB64__lex_common__ubuntu_bionic_amd64__binary/badge/icon)](http://build.ros.org/job/Mbin_uB64__lex_common__ubuntu_bionic_amd64__binary)
-
+    * ROS Kinetic @ u16.04 Xenial [![Build Status](http://build.ros.org/job/Kbin_uX64__lex_common__ubuntu_xenial_amd64__binary/badge/icon)](http://build.ros.org/job/Kbin_uX64__lex_common__ubuntu_xenial_amd64__binary)
+    * ROS Melodic @ u18.04 Bionic [![Build Status](http://build.ros.org/job/Mbin_uB64__lex_common__ubuntu_bionic_amd64__binary/badge/icon)](http://build.ros.org/job/Mbin_uB64__lex_common__ubuntu_bionic_amd64__binary)
+    * ROS Dashing @ u18.04 Bionic [![Build Status](http://build.ros2.org/job/Dbin_uB64__lex_common__ubuntu_bionic_amd64__binary/badge/icon)](http://build.ros2.org/job/Dbin_uB64__lex_common__ubuntu_bionic_amd64__binary)
 
 ## Installation
 
@@ -65,9 +60,8 @@ _Note: If building the master branch instead of a release branch you may need to
 
         source ~/ros-workspace/install/setup.bash
 
-- Build and run the unit tests
+- Run the unit tests
 
-        colcon build --packages-select lex_common --cmake-target tests
         colcon test --packages-select lex_common && colcon test-result --all
 
 
