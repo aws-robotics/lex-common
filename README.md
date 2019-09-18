@@ -29,7 +29,7 @@ The source code is released under an [Apache 2.0].
 On Ubuntu you can install the latest version of this package using the following command
 
         sudo apt-get update
-        sudo apt-get install -y ros-${ROS_DISTRO}-lex-common ros-${ROS_DISTRO}-lex-common
+        sudo apt-get install -y ros-${ROS_DISTRO}-lex-common
 
 ### Building from Source
 
@@ -58,7 +58,7 @@ _Note: If building the master branch instead of a release branch you may need to
 
 - Configure ROS library path
 
-        source ~/ros-workspace/install/setup.bash
+        source ~/ros-workspace/install/local_setup.bash
 
 - Run the unit tests
 
