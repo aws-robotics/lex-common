@@ -1,5 +1,5 @@
 repositories:
-  lex-common
+  lex-common:
     type: git
     url: https://github.com/aws-robotics/lex-common
     version: release-latest
